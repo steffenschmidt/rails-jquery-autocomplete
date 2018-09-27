@@ -46,10 +46,11 @@ module RailsJQueryAutocomplete
       def get_autocomplete_select_clause(model, method, options)
         if sqlite?
           table_name = model.quoted_table_name
-          ([
-              "#{table_name}.#{model.connection.quote_column_name(model.primary_key)} as #{model.primary_key}",
-              "#{table_name}.#{model.connection.quote_column_name(method)} as #{method}"
-            ] + (options[:extra_data].blank? ? [] : options[:extra_data]))
+          l = ["#{table_name}.#{model.connection.quote_column_name(model.primary_key)} as #{model.primary_key}"]
+          param_to_array(method).each do |method|
+            l << "#{table_name}.#{model.connection.quote_column_name(method)} as #{method}"
+          end
+          (l + (options[:extra_data].blank? ? [] : options[:extra_data]))
         else
           table_name = model.table_name
           l = ["#{table_name}.#{model.primary_key}"]

@@ -98,7 +98,11 @@ module RailsJQueryAutocomplete
     #
     def json_for_autocomplete(items, method, extra_data=[])
       items = items.collect do |item|
-        hash = HashWithIndifferentAccess.new({"id" => item.id.to_s, "label" => item.send(method), "value" => item.send(method)})
+        method_array = param_to_array(method)
+        hash = HashWithIndifferentAccess.new({"id" => item.id.to_s, "label" => item.send(method_array[0]), "value" => item.send(method_array[0])})
+        method_array.each do |method|
+          hash[method] = item.send(method)
+        end
         extra_data.each do |datum|
           hash[datum] = item.send(datum)
         end if extra_data
